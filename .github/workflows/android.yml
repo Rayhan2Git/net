@@ -36,8 +36,9 @@ jobs:
 
       - name: Initialize Capacitor
         run: |
-          # Remove android folder if exists to ensure clean init
+          # Remove android folder and config file for clean init
           rm -rf android
+          rm -f capacitor.config.ts
           npx cap init "FeedScroll" "com.rayhandox.feedscroll" --web-dir=dist
 
       - name: Sync Capacitor to Android
@@ -47,5 +48,5 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
-          ls -la app/build/outputs/apk/debug/ || ls -la app/build/outputs/
+          ./gradlew assembleDebug
+          ls -la app/build/outputs/apk/debug/
