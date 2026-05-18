@@ -36,9 +36,7 @@ jobs:
 
       - name: Initialize Capacitor
         run: |
-          # Remove android folder and config file for clean init
           rm -rf android
-          rm -f capacitor.config.ts
           npx cap init "FeedScroll" "com.rayhandox.feedscroll" --web-dir=dist
 
       - name: Sync Capacitor to Android
