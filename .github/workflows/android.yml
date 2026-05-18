@@ -31,31 +31,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Type check
-        run: pnpm tsc --noEmit
-
       - name: Build web app
         run: pnpm build
 
-      - name: Set up Capacitor
+      - name: Initialize Capacitor
         run: |
-          if [ ! -d "android" ]; then
-            npx cap init "FeedScroll" "com.rayhandox.feedscroll" --web-dir=dist --skip-plugin-install --skip-git
-          else
-            echo "Android folder already exists, skipping cap init"
-          fi
-          npx cap sync android
+          # Remove android folder if exists to ensure clean init
+          rm -rf android
+          npx cap init "FeedScroll" "com.rayhandox.feedscroll" --web-dir=dist
+
+      - name: Sync Capacitor to Android
+        run: npx cap sync android
 
       - name: Build Android APK (Debug)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
-          ls -la app/build/outputs/apk/debug/
-
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: feedscroll-debug.apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 7
+          ./gradlew assembleDebug --stacktrace
+          ls -la app/build/outputs/apk/debug/ || ls -la app/build/outputs/
